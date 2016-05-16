@@ -5,7 +5,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg : grunt.file.readJSON('package.json'),
     jshint : {
-      js : ['public/js/main.js'],
+      js : ['public/js/scripts/*.js'],
     },
     less: {
       development: {
@@ -16,11 +16,11 @@ module.exports = function (grunt) {
     },
     watch : {
       js : {
-        files: ['public/js/main.js'],
+        files: ['public/js/scripts/*.js'],
         tasks: ['jshint']
       },
       css : {
-        files : ['public/**/*.less'],
+        files : ['public/less/*.less'],
         tasks : ['less']
       }
     }
