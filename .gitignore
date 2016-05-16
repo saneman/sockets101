@@ -27,3 +27,4 @@ Thumbs.db
 .project
 .settings
 .tmproj
+node_modules/
