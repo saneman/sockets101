@@ -1,5 +1,5 @@
-"use strict";
 $(function() {
+  'use strict';
   var
     connected = false,
     gAlertTime = 4000,
@@ -28,7 +28,7 @@ $(function() {
     },
 
     loadLogin = function () {
-      $app.html(gTemplates['login']);
+      $app.html(gTemplates.login);
       $('.loginButton').off().on('click', commands.login.main);
       $('.signUpButton').off().on('click', commands.signUp.main);
     },
@@ -37,7 +37,7 @@ $(function() {
     displayUsers_old = function (aUsers) {
       // console.log('displayUsers', displayUsers);
       var
-        template = Handlebars.compile(gTemplates['userList']),
+        template = Handlebars.compile(gTemplates.userList),
         html = (template(aUsers));
         $app.append(html);
         // $('.userList').html(html);
@@ -59,15 +59,14 @@ $(function() {
 
     showAlert = function (aType, aMessage) {
       var
-        template = Handlebars.compile(gTemplates['alert']),
+        template = Handlebars.compile(gTemplates.alert),
         alertID = 'alert' + alertCnt,
         current = $('.mainAlert'),
         html = template({
           id: alertID,
           class: aType,
           message: aMessage,
-          top: current.length
-            ? ($('.mainAlert')[0].attributes[1] + 10) : 0
+          top: current.length ? ($('.mainAlert')[0].attributes[1] + 10) : 0
         });
       $('.alertBox').append(html);
       $('#' + alertID).fadeOut(gAlertTime, 'swing', function () {
@@ -230,7 +229,7 @@ $(function() {
 
   // listen for server emitting 'failure' event
   socket.on('failure', function (aData) {
-    // get failure command command
+    // get failure method of command
     var command = aData.failure;
     // run failure method of command
     commands[command].failure(aData);
@@ -238,7 +237,7 @@ $(function() {
 
   // listen for server emitting 'success' event
   socket.on('success', function (aData) {
-    // get command that was in success by the server
+    // get success method of command
     var command = aData.success;
     //run success method of command
     commands[command].success(aData);
@@ -255,7 +254,7 @@ $(function() {
 
     if (appUser !== undefined) {
       // console.log('cookie userSocket: ', appUser);
-      commands.login.main(appUser)
+      commands.login.main(appUser);
     }
     else {
       loadLogin();

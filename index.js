@@ -48,7 +48,7 @@ var
           }
         });
       });
-    })
+    });
   },
   shoutPortNumber = function () {
     // console.log(__l + ': Server listening at port %d', port);
@@ -65,7 +65,7 @@ var
       subject: 'Welcome to game engine',
       text: 'Welcome, ' + user.username,
       html: 'Welcome, <b>' + user.username + '</b>'
-    }
+    };
 
     smtpTransport.sendMail(mail, function(error, response){
       if(error){
@@ -84,26 +84,25 @@ var
       // console.log(__l + ': padClick: ', aData);
       socket.broadcast.emit('showPadClick', aData);
 
-      returnData['success'] = 'padClick';
-      returnData['message'] = 'a client clicked a button[' + aData.padNum + ']';
-      // add user to returnData as data
-      returnData['data'] = aData;
+      returnData = {
+        success: 'padClick',
+        message: 'a client clicked a button[' + aData.padNum + ']',
+        data: aData
+      };
       socket.broadcast.emit('success', returnData);
       socket.emit('success', returnData);
-      // socket.emit('success', returnData);
-
     },
     getUsers: function (aData, socket) {
       var search = {};
       db.collection('users').find(search).each(function(err, user) {
         var returnData;
           assert.equal(err, null);
-          if (user != null) {
+          if (user !== null) {
             returnData = {
               success: 'getUsers',
               message: 'loading user list',
               user: user
-            }
+            };
             socket.broadcast.emit('success', returnData);
             socket.emit('success', returnData);
           }
@@ -111,31 +110,24 @@ var
     },
     signUp: function (aData, socket) {
       var
-        user = aData,
-        user = prepUser(user, socket),
+        user = prepUser(aData, socket),
         returnData = {};
-
-      // console.log(__l + ': signup', aData);
-
       db.collection('users').insertOne(user, function(err, result) {
-        // console.log('err1: ', err);
         if (err === null && result.insertedCount === 1) {
           user = result.ops[0];
-
-          // console.log(__l + ': signUp: ', user);
-
-          returnData['success'] = 'signUp';
-          returnData['message'] = 'Congratulations you have beens signed up';
-          // add user to returnData as data
-          returnData['user'] = user;
-          socket.emit('success', returnData);
+          socket.emit('success', {
+            success: 'signUp',
+            message: 'Congratulations you have beens signed up',
+            user: user
+          });
           // sendWelcomeMail(user);
         }
         else {
-          returnData['failure'] = 'signUp';
-          returnData['message'] = 'username already taken';
           console.log('username already taken');
-          socket.emit('failure', returnData);
+          socket.emit('failure', {
+            failure: 'signUp',
+            message: 'username already taken'
+          });
         }
      });
     },
@@ -204,11 +196,8 @@ var
         var user = loggedInUser.value;
         // we have the user
         if (loggedInUser.ok) {
-          user
+          // user
           console.log(__l + ': Welcome back ' + user.username);
-          returnData['success'] = 'login';
-          // add user to global active users
-
           user.socketID = socket.id;
 
           socket.userID = user._id;
@@ -226,11 +215,11 @@ var
           });
         }
         else {
-          returnData['user'] = user;
-          returnData['failure'] = 'login';
-          returnData['message'] = 'no user with those details exist';
-          // console.log(__l + ': login attempt, no user with those details exist');
-          socket.emit('failure', returnData);
+          socket.emit('failure', {
+            failure: 'login',
+            user: user,
+            message: 'no user with those details exist'
+          });
         }
       });
     }
