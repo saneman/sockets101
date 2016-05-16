@@ -1,0 +1,21 @@
+{
+  "name": "game-chat",
+  "version": "0.0.1",
+  "description": "game chat using socket.io",
+  "main": "index.js",
+  "author": "Guy Murray",
+  "private": true,
+  "license": "BSD",
+  "dependencies": {
+    "express": "4.13.4",
+    "fs": "0.0.2",
+    "handlebars": "^4.0.5",
+    "jquery-latest": "^1.9.0",
+    "jquery-ui": "^1.10.5",
+    "js-cookie": "^2.1.1",
+    "md5": "^2.1.0",
+    "mongodb": "^2.1.18",
+    "nodemailer": "0.7.1",
+    "socket.io": "^1.4.6"
+  }
+}
