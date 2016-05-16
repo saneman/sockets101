@@ -1,18 +1,14 @@
+<!--templates/user-list-->
 <h3>Users</h3>
 <div class="list-group">
   {{#each users}}
-    <div userID="{{this._id}}" class="userItem list-group-item list-group-item-info {{this.active}}">
+    <div userID="{{this._id}}" class="list-group-item userItem list-group-item-info {{this.active}}">
       {{#if this.loggedIn}}
         [ONLINE]
       {{/if}}
-
       {{this.username}}
       {{#if this.active}}
-      <button
-        id="logoutButton"
-        class="logoutButton pull-right btn btn-xs btn-warning"
-        type="button"
-      >logout</button>
+      <button type="button" id="logoutButton" class="btn btn-xs btn-warning pull-right logoutButton">logout</button>
       {{/if}}
     </div>
   {{/each}}

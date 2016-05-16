@@ -117,16 +117,16 @@ var
           user = result.ops[0];
           socket.emit('success', {
             success: 'signUp',
-            message: 'Congratulations you have beens signed up',
+            message: 'Congratulations you have been signed up',
             user: user
           });
           // sendWelcomeMail(user);
         }
         else {
-          console.log('username already taken');
+          console.log('Username is already taken.');
           socket.emit('failure', {
             failure: 'signUp',
-            message: 'username already taken'
+            message: 'Username is already taken.'
           });
         }
      });

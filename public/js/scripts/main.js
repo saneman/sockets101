@@ -23,7 +23,7 @@ $(function() {
 
       aUser.active = isUser ? 'active' : undefined;
       html = template({users: gUsers});
-      $('.userList').html(html);
+      $('.user-list').html(html);
       $('.logoutButton').off().on('click', commands.logout.main);
     },
 
@@ -40,7 +40,7 @@ $(function() {
         template = Handlebars.compile(gTemplates.userList),
         html = (template(aUsers));
         $app.append(html);
-        // $('.userList').html(html);
+        // $('.user-list').html(html);
     },
 
     loadApp = function (aApp) {
@@ -61,14 +61,14 @@ $(function() {
       var
         template = Handlebars.compile(gTemplates.alert),
         alertID = 'alert' + alertCnt,
-        current = $('.mainAlert'),
+        current = $('.main-alert'),
         html = template({
           id: alertID,
           class: aType,
           message: aMessage,
-          top: current.length ? ($('.mainAlert')[0].attributes[1] + 10) : 0
+          top: current.length ? ($('.main-alert')[0].attributes[1] + 10) : 0
         });
-      $('.alertBox').append(html);
+      $('.alert-box').append(html);
       $('#' + alertID).fadeOut(gAlertTime, 'swing', function () {
         $(this).remove();
       });
@@ -177,7 +177,7 @@ $(function() {
           );
 
           // load app
-          loadApp('buttonsApp');
+          loadApp('buttons-app');
         },
         failure: function (aData) {
           // console.log('login failure: ', aData);
