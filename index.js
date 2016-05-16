@@ -2,6 +2,7 @@ var
   utils1 = require('./utils/guy'),
   utils2 = require('./utils/anre'),
   md5 = utils1.md5,
+  commands = utils1.commands,
   prepUser = utils1.prepUser,
   fs = require('fs'),
   express = require('express'),
@@ -26,6 +27,12 @@ var
   clearUserDB = false,
   globalStack = utils1.a,
   globalLine = utils1.b,
+  moves = {
+    37: 'left',
+    38: 'forward',
+    39: 'right',
+    40: 'back'
+  },
   // Use Smtp Protocol to send Email
   smtpTransport = mailer.createTransport('SMTP',{
     service: 'Gmail',
@@ -79,10 +86,41 @@ var
     });
   },
   clientCommands = {
+    moveButton: function (aData, socket) {
+      var returnData = {}, direction = moves[aData.keyNum];
+
+      returnData = {
+        success: 'moveButton',
+        data: aData,
+        direction: direction
+      };
+
+      returnData.message = 'a client has moved the button[' + direction + ']';
+      returnData.notMe = true;
+      socket.broadcast.emit('success', returnData);
+
+      returnData.message = 'you have moved the button[' + direction + ']';
+      returnData.notMe = false;
+      socket.emit('success', returnData);
+    },
+    takeControl: function (aData, socket) {
+      var returnData = {};
+
+      returnData = {
+        success: 'takeControl',
+        data: aData
+      };
+
+      returnData.message = 'a client has taken control of a button[' + aData.padNum + ']';
+      returnData.notMe = true;
+      socket.broadcast.emit('success', returnData);
+
+      returnData.message = 'you has taken control of button[' + aData.padNum + ']';
+      returnData.notMe = false;
+      socket.emit('success', returnData);
+    },
     padClick: function (aData, socket) {
       var returnData = {};
-      // console.log(__l + ': padClick: ', aData);
-      socket.broadcast.emit('showPadClick', aData);
 
       returnData = {
         success: 'padClick',
@@ -205,7 +243,7 @@ var
 
           gActiveUsers[socket.id] = user;
 
-          console.log(__l + ': login active sockets: ', getSocketClients());
+          // console.log(__l + ': login active sockets: ', getSocketClients());
           // console.log(__l + ': login activeUsers keys: ', Object.keys(gActiveUsers));
 
           socket.emit('success', {

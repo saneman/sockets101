@@ -45,7 +45,15 @@ $(function() {
 
     loadApp = function (aApp) {
       $app.html(gTemplates[aApp]);
-      $('.padButton').off().on('click', commands.padClick.main);
+
+      // padClick basic
+
+      // whichApp
+
+      // $('.pad-button').off().on('click', commands.padClick.main);
+
+      $('.pad-button').off().on('click', commands.takeControl.main);
+
       // load user list
       commands.getUsers.main();
     },
@@ -97,7 +105,7 @@ $(function() {
           // showAlert('success', aData.message);
           var
             $button = $('button[num="' + aData.data.padNum + '"]'),
-            $user = $('.userItem[userID="' + aData.data.userID + '"]'),
+            $user = $('.user-item[user-id="' + aData.data.userID + '"]'),
             flip = $button.hasClass('btn-primary');
 
           $button.toggleClass('btn-primary', !flip).toggleClass('btn-danger', flip);
@@ -105,6 +113,93 @@ $(function() {
         },
         failure: function (aData) {
           console.log('padClick failure');
+          // showAlert('warning', aData.message);
+        }
+      },
+
+      takeControl: {
+        main: function (aElement) {
+          var padNum = $(aElement.target).attr('num');
+          console.log('takeControl', padNum);
+          socket.emit('command', {
+            command: 'takeControl',
+            data: {
+              padNum: padNum,
+              userID: gUser._id
+            }
+          });
+        },
+        success: function (aData) {
+          var
+            template = Handlebars.compile(gTemplates.glyph),
+            html = template({
+              glyph: 'knight'
+            }),
+            $button = $('button[num="' + aData.data.padNum + '"]'),
+            $user = $('.user-item[user-id="' + aData.data.userID + '"]');
+
+          $button.html(html);
+
+          if (aData.notMe) {
+            $button.addClass('under-their-control');
+            $button.off();
+            $button.css('color','red');
+          }
+          else {
+            $button.addClass('under-my-control');
+            $('body').on('keydown', function (key) {
+              if ([37, 38, 39, 40].indexOf(key.which) > -1) {
+                commands.moveButton.main(key.which);
+              }
+            });
+            $button.css('color','lightgreen');
+            $('.pad-button').off();
+          }
+        },
+        failure: function (aData) {
+          console.log('takeControl failure');
+          // showAlert('warning', aData.message);
+        }
+      },
+      moveButton: {
+        main: function (aKeyNum) {
+          socket.emit('command', {
+            command: 'moveButton',
+            data: {
+              keyNum: aKeyNum,
+              userID: gUser._id
+            }
+          });
+        },
+        success: function (aData) {
+          var
+            $button = !aData.notMe ? $('.under-my-control') : $('.under-their-control'),
+            $user = $('.user-item[user-id="' + aData.data.userID + '"]'),
+            direction = aData.direction,
+            top = $button.position().top,
+            left = $button.position().left,
+            inc = 15;
+
+          switch (direction) {
+            case 'forward':
+              $button.css('top',  '-=' + ((top - inc) >= inc ? inc : (top - inc)) + 'px');
+              break;
+            case 'back':
+              $button.css('top',  '+=' + inc + 'px');
+              break;
+            case 'left':
+              $button.css('left',  '-=' + ((left - inc) >= inc ? inc : (left - inc)) + 'px');
+              break;
+            case 'right':
+              $button.css('left',  '+=' + inc + 'px');
+              break;
+          }
+
+          $button.css('position', 'relative');
+          $user.effect('pulsate', {times: 1}, 50);
+        },
+        failure: function (aData) {
+          console.log('moveButton failure');
           // showAlert('warning', aData.message);
         }
       },
@@ -198,7 +293,7 @@ $(function() {
           var
             userLoggingOutID = aData.userID,
             userID = gUser._id,
-            $user = $('.userItem[userID="' + aData.userID + '"]');
+            $user = $('.user-item[user-id="' + aData.userID + '"]');
 
           console.log(aData.userID, gUser._id, gUsers);
 
