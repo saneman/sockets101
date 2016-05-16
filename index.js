@@ -1,6 +1,6 @@
 // Setup basic express server
 var
-  utils = require('extra'),
+  utils = require('./ej'),
   md5 = utils.md5,
   fs = require('fs'),
   express = require('express'),
