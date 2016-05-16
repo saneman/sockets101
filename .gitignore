@@ -28,3 +28,6 @@ Thumbs.db
 .settings
 .tmproj
 node_modules/
+
+# CSS
+public/css/main.css
