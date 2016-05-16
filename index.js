@@ -2,6 +2,7 @@ var
   utils1 = require('./utils/guy'),
   utils2 = require('./utils/anre'),
   md5 = utils1.md5,
+  prepUser = utils1.prepUser,
   fs = require('fs'),
   express = require('express'),
   app = express(),
@@ -14,7 +15,7 @@ var
   mongodb = require('mongodb'),
   MongoClient = mongodb.MongoClient,
   ObjectId = mongodb.ObjectID,
-  getSocketClients = function functionName() {
+  getSocketClients = function () {
     return Object.keys(io.clients().sockets);
   },
   assert = require('assert'),
@@ -111,7 +112,7 @@ var
     signUp: function (aData, socket) {
       var
         user = aData,
-        user = utils.prepUser(user, socket),
+        user = prepUser(user, socket),
         returnData = {};
 
       // console.log(__l + ': signup', aData);
@@ -270,9 +271,6 @@ MongoClient.connect(dbUrl, function(err, aDb) {
   // check when a user connects
   io.on('connection', function (socket) {
 
-    // console.log(__l + ': connection active sockets: ', Object.keys(io.clients().sockets));
-    // console.log(__l + ': connection activeUsers keys: ', Object.keys(gActiveUsers));
-
     socket.userLoggedIn = false;
 
     socket.broadcast.emit('a client connected on socket: ', socket.id);
@@ -282,7 +280,7 @@ MongoClient.connect(dbUrl, function(err, aDb) {
     socket.on('command', function (aData) {
       var command = aData.command;
       // run the client command
-      console.log(__l + ': command', aData)
+      // console.log(__l + ': command', aData)
       if (clientCommands[command]) {
         clientCommands[command](aData.data, socket);
       }
