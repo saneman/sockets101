@@ -23,22 +23,8 @@ var
   db,
   mailer = require('nodemailer'),
   clearUserDB = false,
-  a = Object.defineProperty(global, '__stack', {
-    get: function(){
-      var orig = Error.prepareStackTrace;
-      Error.prepareStackTrace = function(_, stack){ return stack; };
-      var err = new Error;
-      Error.captureStackTrace(err, arguments.callee);
-      var stack = err.stack;
-      Error.prepareStackTrace = orig;
-      return stack;
-    }
-  }),
-  b = Object.defineProperty(global, '__l', {
-    get: function(){
-      return __stack[1].getLineNumber();
-    }
-  }),
+  globalStack = utils1.a,
+  globalLine = utils1.b,
   // Use Smtp Protocol to send Email
   smtpTransport = mailer.createTransport('SMTP',{
     service: 'Gmail',
