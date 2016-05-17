@@ -221,7 +221,7 @@ $(function() {
           }
 
           $button.css('position', 'relative');
-          $user.effect('pulsate', {times: 1}, 50);
+          $user.stop().effect('pulsate', {times: 1}, 50);
         },
         failure: function (aData) {
           console.log('moveButton failure');
@@ -286,14 +286,14 @@ $(function() {
           gUser = aData.user;
 
           // set cookie data of user
-          // var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
-          var inHalfAMinute = new Date(new Date().getTime() + 1 * 30 * 1000);
+          var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
+          // var inHalfAMinute = new Date(new Date().getTime() + 1 * 30 * 1000);
           Cookies.set('appUser',
             {
               _id: aData.user._id
             },
-            // {expires: inFifteenMinutes}
-            {expires: inHalfAMinute}
+            {expires: inFifteenMinutes}
+            // {expires: inHalfAMinute}
           );
 
           // load app

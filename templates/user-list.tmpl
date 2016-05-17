@@ -1,15 +1,20 @@
 <!--templates/user-list-->
-<h3>Users</h3>
-<div class="list-group">
-  {{#each users}}
-    <div user-id="{{this._id}}" class="list-group-item user-item list-group-item-info {{this.active}}">
-      {{#if this.loggedIn}}
-        [ONLINE]
-      {{/if}}
-      {{this.username}}
-      {{#if this.active}}
-      <button type="button" id="logoutButton" class="btn btn-xs btn-warning pull-right logoutButton">logout</button>
-      {{/if}}
-    </div>
-  {{/each}}
+<div class="well">
+  <div class="list-group">
+    <h3>Users</h3>
+    {{#each users}}
+      <div user-id="{{this._id}}" class="list-group-item user-item {{this.active}}">
+        <i class="glyphicon glyphicon-user"></i> {{#if this.loggedIn}}[ONLINE]{{/if}} {{this.username}}
+        {{#if this.active}}
+        <div class="btn-group pull-right" role="group">
+          <button type="button" id="logoutButton" class="btn btn-default btn-xs logoutButton">Log Out</button>
+          <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i></button>
+          <ul class="dropdown-menu">
+            <li><a href="#">Click for #Increases</a></li>
+          </ul>
+        </div>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
 </div>

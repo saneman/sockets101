@@ -6,22 +6,13 @@ html {
   box-sizing: inherit;
 }
 
-html {
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-}
-
-html, input {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-}
-
 .app {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: lightgreen;
+  background: url("../img/tweed.png") repeat;
 }
 
 .main {
@@ -33,7 +24,15 @@ html, input {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: yellow;
+  padding: 20px 20px 0 0;
+
+  h3 {
+    margin-top: 0;
+  }
+
+  .list-group {
+    margin-bottom: 0;
+  }
 }
 
 .alert-box {
@@ -41,6 +40,10 @@ html, input {
   bottom: 0;
   left: 1%;
   z-index: 9999;
+}
+
+.login {
+  margin-top: 15px;
 }
 
 .under-my-control {
