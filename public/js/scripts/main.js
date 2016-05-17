@@ -1,13 +1,13 @@
-$(function() {
+$(function () {
+
   'use strict';
+
   var
     connected = false,
     gAlertTime = 4000,
     gTemplates = {},
     // make a socket connection
     socket = io(),
-    $loginButton,
-    $signUpButton,
     alertCnt = 1,
     gUsers = {},
     gUser = {},
@@ -41,23 +41,13 @@ $(function() {
       aUser.active = isUser ? 'active' : undefined;
       html = template({users: gUsers});
       $('.user-list').html(html);
-      $('.logoutButton').off().on('click', commands.logout.main);
+      $('.logout-button').off().on('click', commands.logout.main);
     },
 
     loadLogin = function () {
       $app.html(gTemplates.login);
-      $('.loginButton').off().on('click', commands.login.main);
-      $('.signUpButton').off().on('click', commands.signUp.main);
-    },
-
-    //old
-    displayUsers_old = function (aUsers) {
-      // console.log('displayUsers', displayUsers);
-      var
-        template = Handlebars.compile(gTemplates.userList),
-        html = (template(aUsers));
-        $app.append(html);
-        // $('.user-list').html(html);
+      $('.login-button').off().on('click', commands.login.main);
+      $('.sign-up-button').off().on('click', commands.signUp.main);
     },
 
     loadApp = function (aApp) {
@@ -73,6 +63,8 @@ $(function() {
 
       // load user list
       commands.getUsers.main();
+
+
     },
 
     loadTemplates = function (aTemplates) {
@@ -101,7 +93,7 @@ $(function() {
     },
 
     highLight = function (aElement, b) {
-      // console.log('highLight', aElement, b)
+      // console.log('highLight', aElement, b);
       $(aElement.target).addClass('active');
     },
 
@@ -280,8 +272,8 @@ $(function() {
         },
         success: function (aData) {
           showAlert('success', 'Welcome back: ' + aData.user.username);
+
           $('.login').remove();
-          // $app.addClass('split');
 
           gUser = aData.user;
 
@@ -292,8 +284,12 @@ $(function() {
             {
               _id: aData.user._id
             },
-            {expires: inFifteenMinutes}
-            // {expires: inHalfAMinute}
+            {
+              expires: inFifteenMinutes
+            }
+            // {
+            //   expires: inHalfAMinute
+            // }
           );
 
           // load app
@@ -366,7 +362,6 @@ $(function() {
   // listen for server emitting 'connected' event
   socket.on('connected', function (aData) {
     // console.log('connected', aData);
-
     var appUser = Cookies.getJSON('appUser');
     gUsers = {};
     loadTemplates(aData.templates);
@@ -380,9 +375,7 @@ $(function() {
       loadLogin();
     }
   });
-
   //----------------------------------------------------------
   //--------------------| EVENTS END |------------------------
   //----------------------------------------------------------
-
 });

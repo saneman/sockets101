@@ -33,6 +33,7 @@ var
     39: 'right',
     40: 'back'
   },
+
   // Use Smtp Protocol to send Email
   smtpTransport = mailer.createTransport('SMTP',{
     service: 'Gmail',
@@ -41,6 +42,7 @@ var
       pass: 'u235cmGE'
     }
   }),
+
   sendConnectionData = function (socket) {
     fs.readdir(__dirname + '/templates', function (aErr, aFiles) {
       aFiles.forEach(function (fileToRead) {
@@ -57,14 +59,17 @@ var
       });
     });
   },
+
   shoutPortNumber = function () {
     // console.log(__l + ': Server listening at port %d', port);
   },
+
   clearCollection = function(aCollectionName) {
     db.collection(aCollectionName).deleteMany( {}, function(err, results) {
       // console.log(results);
    });
   },
+
   sendWelcomeMail = function (user) {
     mail = {
       from: 'Guy Murray <gm.overrun@gmail.com>',
@@ -75,16 +80,18 @@ var
     };
 
     smtpTransport.sendMail(mail, function(error, response){
-      if(error){
+      if (error) {
         console.log(error);
         return false;
-      }else{
+      }
+      else {
         console.log("Message sent: " + response.message);
         return true;
       }
       smtpTransport.close();
     });
   },
+
   clientCommands = {
     moveButton: function (aData, socket) {
       var returnData = {}, direction = moves[aData.keyNum];
@@ -103,6 +110,7 @@ var
       returnData.notMe = false;
       socket.emit('success', returnData);
     },
+
     takeControl: function (aData, socket) {
       var returnData = {};
 
@@ -119,6 +127,7 @@ var
       returnData.notMe = false;
       socket.emit('success', returnData);
     },
+
     padClick: function (aData, socket) {
       var returnData = {};
 
@@ -130,6 +139,7 @@ var
       socket.broadcast.emit('success', returnData);
       socket.emit('success', returnData);
     },
+
     getUsers: function (aData, socket) {
       var search = {};
       db.collection('users').find(search).each(function(err, user) {
@@ -146,6 +156,7 @@ var
           }
       });
     },
+
     signUp: function (aData, socket) {
       var
         user = prepUser(aData, socket),
@@ -169,6 +180,7 @@ var
         }
      });
     },
+
     logout: function (aData, socket) {
       var returnData = {}, userID = aData.userID, loggedInUser, searchBy;
 
@@ -210,6 +222,7 @@ var
         socket.emit('failure', returnData);
       }
     },
+
     login: function (aData, socket) {
       var
         user = aData,
@@ -277,12 +290,12 @@ var
   };
 
 // connect to mongo database and create db object
-MongoClient.connect(dbUrl, function(err, aDb) {
+MongoClient.connect(dbUrl, function (err, aDb) {
   assert.equal(null, err);
   db = aDb;
   // console.log(__l + ': Connected correctly to dbUrl: ' + dbUrl);
 
-  //clear user db
+  // clear user db
   if (clearUserDB) {
     clearCollection('users');
 
@@ -293,14 +306,15 @@ MongoClient.connect(dbUrl, function(err, aDb) {
   }
   // start listening on port
   http.listen(port, shoutPortNumber);
+
   // Routing for files and stuff
   app.use(express.static(__dirname + '/public'));
+
   // check when a user connects
   io.on('connection', function (socket) {
-
     socket.userLoggedIn = false;
-
     socket.broadcast.emit('a client connected on socket: ', socket.id);
+
     sendConnectionData(socket);
 
     // listen for 'command' event from user on socket
@@ -320,14 +334,10 @@ MongoClient.connect(dbUrl, function(err, aDb) {
     socket.on('disconnect', function () {
       if (gActiveUsers[socket.id]) {
         delete gActiveUsers[socket.id];
-
         clientCommands.getUsers({disconnect: true}, socket);
-
         // console.log(__l + ': disconnect active sockets: ', Object.keys(io.clients().sockets));
         // console.log(__l + ': disconnect activeUsers keys: ', Object.keys(gActiveUsers));
-
       }
-
     });
   });
 });
