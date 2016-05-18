@@ -42,12 +42,37 @@ $(function () {
       html = template({users: gUsers});
       $('.user-list').html(html);
       $('.logout-button').off().on('click', commands.logout.main);
+
+
+      $( '#slider' ).slider({
+        value: 100,
+        min: 0,
+        max: 500,
+        step: 50,
+        slide: function( event, ui ) {
+          $( "#amount" ).val( "$" + ui.value );
+        }
+      });
+
+
+
+
+
+
+      console.log('slider?', $('#ex1').length);
     },
 
     loadLogin = function () {
       $app.html(gTemplates.login);
       $('.login-button').off().on('click', commands.login.main);
       $('.sign-up-button').off().on('click', commands.signUp.main);
+
+      $('.slider').slider({
+      	formatter: function(value) {
+      		return 'Current value: ' + value;
+      	}
+      });
+
     },
 
     loadApp = function (aApp) {
@@ -129,7 +154,7 @@ $(function () {
       takeControl: {
         main: function (aElement) {
           var padNum = $(aElement.target).attr('num');
-          console.log('takeControl', padNum);
+          console.log('takeControl', gUser._id);
           socket.emit('command', {
             command: 'takeControl',
             data: {
@@ -139,6 +164,9 @@ $(function () {
           });
         },
         success: function (aData) {
+
+          console.log('takeControl success aData: ', aData);
+
           var
             template = Handlebars.compile(gTemplates.glyph),
             html = template({

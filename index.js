@@ -43,6 +43,17 @@ var
     }
   }),
 
+  vomitUser = function (aUserID) {
+    console.log('vomitUserID: ',  aUserID);
+    var search = {_id: ObjectId(aUserID)};
+    db.collection('users').find(search).each(function(err, user) {
+        assert.equal(err, null);
+        if (user !== null) {
+          console.log(__l + ': ', user);
+        }
+    });
+  },
+
   sendConnectionData = function (socket) {
     fs.readdir(__dirname + '/templates', function (aErr, aFiles) {
       aFiles.forEach(function (fileToRead) {
@@ -112,7 +123,22 @@ var
     },
 
     takeControl: function (aData, socket) {
-      var returnData = {};
+      var
+        returnData = {},
+        userID = aData.userID,
+        searchBy= {
+          _id: ObjectId(userID)
+        };
+      // update user set which button he is looking at
+      db.collection('users').update(
+        searchBy, {
+          $set:{
+            'buttonNum': aData.padNum
+          }
+        }
+      );
+
+      // vomitUser(userID);
 
       returnData = {
         success: 'takeControl',

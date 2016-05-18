@@ -1,15 +1,17 @@
-define(function (require) {
+define([
+  'js/scripts/user.js',
+  'js/scripts/app2.js'
+],
+
+function (user, app) {
   'use strict';
 
-  var user = require('js/scripts/user.js');
-  new user({
+  var newUser = new user({
     hello : 'Hello user.'
   });
 
 
   if (1 === 1) {
-    var app = require('js/scripts/app2.js');
-
     var ppa = new app({apples: 'granny smith'});
 
     ppa.main();
