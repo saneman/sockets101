@@ -1,21 +1,42 @@
 define([
-  'js/scripts/user.js',
-  'js/scripts/app2.js'
+  'namespace',
+  'io',
+  'jscookie',
+  'bootstrap',
+  'jqueryui',
+  'bootstrapslider',
 ],
 
-function (user, app) {
+function (namespace, io, Cookies) {
+
   'use strict';
 
-  var newUser = new user({
-    hello : 'Hello user.'
+  var utils = namespace.utils;
+
+  console.log('namespace', namespace);
+
+  var socket = io();
+  socket.on('connected', function (aData) {
+    // console.log('connected', aData);
+    var appUser = Cookies.getJSON('appUser');
+    namespace.gUsers = {};
+    utils.loadTemplates(aData.templates, namespace.gTemplates);
+
+    if (appUser !== undefined) {
+      // console.log('cookie userSocket: ', appUser);
+      // commands.login.main(appUser);
+    }
+    else {
+      utils.loadLogin(aData);
+    }
   });
 
+  // $('body').fadeOut('slow');
+  $('#slider').slider();
 
-  if (1 === 1) {
-    var ppa = new app({apples: 'granny smith'});
+  var mea = true;
 
-    ppa.main();
-
-    console.log('ppa', ppa);
+  if (!_.isUndefined(mea)) {
+    console.log('Underscore works!');
   }
 });
