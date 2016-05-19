@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     less: {
       development: {
         files: {
-          'public/css/main.css' : 'public/less/main.less'
+          'public/css/main.css' : 'assets/less/main.less'
         }
       }
     },
@@ -20,7 +20,7 @@ module.exports = function (grunt) {
         tasks: ['jshint']
       },
       css : {
-        files : ['public/less/*.less'],
+        files : ['assets/less/*.less'],
         tasks : ['less']
       }
     }
@@ -34,5 +34,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
 
   // Default task(s).
-  grunt.registerTask('default', ['less', 'watch']);
+  grunt.registerTask('default', ['less', 'jshint', 'watch']);
 };
