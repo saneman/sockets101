@@ -34,8 +34,8 @@ require.config({
 
 // global variable
 var
-  gTemplates = {}
-  gAlertCnt = 1;
+  gTemplates = {},
+  gAlertCnt = 1,
   gAlertTime = 4000,
   gUsers = {},
   gUser = {};

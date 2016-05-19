@@ -11,6 +11,14 @@ define([
 
     // return object
     return {
+      globals: {
+        gTemplates: {},
+        gAlertCnt: 1,
+        gAlertTime: 4000,
+        gUsers: {},
+        gUser: {},
+        commands: {}
+      },
       commands: {
         padClick: {
           main: function (aElement) {

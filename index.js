@@ -285,6 +285,8 @@ var
           // console.log(__l + ': login active sockets: ', getSocketClients());
           // console.log(__l + ': login activeUsers keys: ', Object.keys(gActiveUsers));
 
+          console.log(__l + ': login success');
+
           socket.emit('success', {
             success: 'login',
             user: user,

@@ -9,49 +9,33 @@ function (namespace, handlebars) {
 
   var
     utils = namespace.utils,
+    globals = namespace.globals,
     main = function (aUserSearch) {
-      socket.emit('command', {
+      globals.socket.emit('command', {
         command: 'getUsers',
         data: aUserSearch
       });
-    },
-    success = function (aData) {
-
-
-      console.log('gUser', gUser);
-
-
-      var
-        user = aData.user,
-        isUser = user._id === gUser._id,
-        template = handlebars.compile(gTemplates['user-list']);
-
-
-      user.active = isUser ? 'active' : undefined;
-      gUsers[user._id] = user;
-
-
-      console.log('user', user);
-
-      $('.user-list').html(template({users: gUsers}));
-      $('.logout-button').off().on('click', function () {
-        console.log('lougout!');
-      });
-
-    },
-    failure = function (aData) {
-      console.log('user-list failure');
-      showAlert('warning', aData.message);
     };
+    // add success and failure to the global command loist for callbacks
+    globals.commands.getUsers = {
+      success: function (aData) {
+        var
+          user = aData.user,
+          isUser = user._id === globals.gUser._id,
+          template = handlebars.compile(gTemplates['user-list']);
 
-  // listen for server emitting 'success' event
-  socket.on('success', function (aData) {
-    success(aData);
-  });
-  // listen for server emitting 'success' event
-  socket.on('failure', function (aData) {
-    failure(aData);
-  });
+        user.active = isUser ? 'active' : undefined;
+        globals.gUsers[user._id] = user;
 
+        $('.user-list').html(template({users: globals.gUsers}));
+        $('.logout-button').off().on('click', function () {
+          console.log('logout!');
+        });
+      },
+      failure: function (aData) {
+        console.log('user-list failure');
+        showAlert('warning', aData.message);
+      }
+    };
   main();
 });
