@@ -1,41 +1,66 @@
 define([
   'namespace',
+  'jscookie',
   'handlebars'
 ],
 
-function (namespace, handlebars) {
+function (namespace, Cookies, handlebars) {
 
   'use strict';
 
   var
     utils = namespace.utils,
+    showAlert = utils.showAlert,
     globals = namespace.globals,
-    main = function (aUserSearch) {
-      globals.socket.emit('command', {
+    commands = globals.commands,
+    socket = globals.socket;
+
+  // add success and failure to the global command list for callbacks
+  commands.getUsers = {
+    main: function (aUserSearch) {
+      socket.emit('command', {
         command: 'getUsers',
         data: aUserSearch
       });
-    };
-    // add success and failure to the global command loist for callbacks
-    globals.commands.getUsers = {
-      success: function (aData) {
-        var
-          user = aData.user,
-          isUser = user._id === globals.gUser._id,
-          template = handlebars.compile(gTemplates['user-list']);
+    },
+    success: function (aData) {
+      var
+        user = aData.user,
+        isUser = user._id === globals.gUser._id,
+        template = handlebars.compile(gTemplates['user-list']);
 
-        user.active = isUser ? 'active' : undefined;
-        globals.gUsers[user._id] = user;
+      user.active = isUser ? 'active' : undefined;
+      globals.gUsers[user._id] = user;
 
+      // if (user.loggedIn) {
         $('.user-list').html(template({users: globals.gUsers}));
+
+        console.log('user-list success: ' + isUser, globals.gUser);
+
         $('.logout-button').off().on('click', function () {
-          console.log('logout!');
+          // load the 'login module'
+          require(['logout'], function () {
+            globals.commands.logout.main();
+          });
         });
-      },
-      failure: function (aData) {
-        console.log('user-list failure');
-        showAlert('warning', aData.message);
-      }
-    };
-  main();
+      // }
+    },
+    failure: function (aData) {
+      showAlert('warning', aData.message);
+    },
+    render: function () {
+      console.log('user-list render');
+      commands.getUsers.main();
+    }
+  };
+
+
+
+
+
+
+
+
+
+
 });

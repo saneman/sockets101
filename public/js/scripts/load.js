@@ -1,13 +1,16 @@
+// define what libs we need
 define([
   'namespace',
   'io',
   'jscookie'
 ],
 
+// callback method
 function (namespace, io, Cookies) {
 
   'use strict';
 
+  // get globals from the namespace
   var globals = namespace.globals;
 
   // set up socket things on window thing
@@ -20,18 +23,18 @@ function (namespace, io, Cookies) {
 
     // listen for server emitting 'success' event
     globals.socket.on('success', function (aData) {
-      var
-        command = aData.success;
-      globals.commands[command].success(aData);
+      globals.commands[aData.success].success(aData);
     });
     // listen for server emitting 'success' event
     globals.socket.on('failure', function (aData) {
       var
         command = aData.failure;
-      globals.commands[command].failure(aData);
+      globals.commands[aData.failure].failure(aData);
     });
 
-    // load the login thing
-    require(['login']);
+    // load the 'login module'
+    require(['login'], function () {
+      globals.commands.login.render();
+    });
   });
 });

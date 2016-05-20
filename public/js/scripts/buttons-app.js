@@ -13,8 +13,12 @@ function (namespace, Cookies, handlebars) {
 
   var
     utils = namespace.utils,
-    template = handlebars.compile(gTemplates['buttons-app'])(),
-    main = function (aElement) {
+    globals = namespace.globals,
+    commands = globals.commands,
+    template = handlebars.compile(gTemplates['buttons-app'])();
+
+  commands.buttonsApp = {
+    main: function (aElement) {
       var padNum = $(aElement.target).attr('num');
 
       console.log('takeControl', gUser._id);
@@ -27,7 +31,7 @@ function (namespace, Cookies, handlebars) {
         }
       });
     },
-    success = function (aData) {
+    success: function (aData) {
 
       console.log('takeControl success aData: ', aData);
 
@@ -57,12 +61,14 @@ function (namespace, Cookies, handlebars) {
         $('.pad-button').off();
       }
     },
-    failure = function (aData) {
+    failure: function (aData) {
       console.log('takeControl failure');
       // showAlert('warning', aData.message);
-    };
+    },
+    render: function () {
+      $('.main').html(template);
 
-    $('.app').html(template);
-
-    $('.pad-button').off().on('click', main);
+      $('.pad-button').off().on('click', commands.buttonsApp.main);
+    }
+  };
 });

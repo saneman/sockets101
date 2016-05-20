@@ -24,7 +24,7 @@ var
   dbUrl = 'mongodb://localhost:27017/' + dbName,
   db,
   mailer = require('nodemailer'),
-  clearUserDB = false,
+  clearUserDB = true,
   globalStack = utils1.a,
   globalLine = utils1.b,
   moves = {
@@ -167,6 +167,7 @@ var
     },
 
     getUsers: function (aData, socket) {
+      console.log(__l + ': get users');
       var search = {};
       db.collection('users').find(search).each(function(err, user) {
         var returnData;
@@ -211,7 +212,7 @@ var
       var returnData = {}, userID = aData.userID, loggedInUser, searchBy;
 
       if (userID && userID.toString() === socket.userID.toString()) {
-        // console.log(__l + 'logout time', aData);
+
 
         searchBy = {
           _id: ObjectId(userID)
@@ -226,6 +227,9 @@ var
         ).then(function (loggedInUser) {
           var user = loggedInUser.value;
           if (loggedInUser.ok) {
+
+            console.log(__l + 'logout time', aData);
+
             delete gActiveUsers[socket.id];
             socket.userLoggedIn = false;
             returnData = {
@@ -285,7 +289,7 @@ var
           // console.log(__l + ': login active sockets: ', getSocketClients());
           // console.log(__l + ': login activeUsers keys: ', Object.keys(gActiveUsers));
 
-          console.log(__l + ': login success');
+          // console.log(__l + ': login success');
 
           socket.emit('success', {
             success: 'login',

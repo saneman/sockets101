@@ -19,9 +19,6 @@
 
       {{/if}}
     {{/each}}
-    <li class="list-group-item user-item">
-      <div id="slider"></div>
-    </li>
     {{#each users}}
       {{#unless this.loggedIn}}
       <li user-id="{{this._id}}" class="list-group-item user-item {{this.active}}">
