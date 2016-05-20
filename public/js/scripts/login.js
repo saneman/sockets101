@@ -7,7 +7,7 @@ define([
 
 function (namespace, Cookies, handlebars) {
 
-  'use strict';
+  "use strict";
 
   var
     utils = namespace.utils,

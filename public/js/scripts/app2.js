@@ -3,7 +3,8 @@ define([
 
 function ($) {
 
-  'use strict';
+  "use strict";
+
   // return headless function # constructor
   return function () {
     // return object

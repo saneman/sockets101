@@ -1,32 +1,34 @@
 // config for require
 require.config({
-  baseUrl: 'js/scripts',
-  paths: {
-    public: '.',
-    jquery: '../libs/jquery',
-    jqueryui: '../libs/jquery-ui',
-    io: '../libs/socket.io',
-    handlebars: '../libs/handlebars',
-    underscore: '../libs/underscore',
-    jscookie: '../libs/js.cookie',
-    bootstrap: '../libs/bootstrap',
-    bootstrapslider: '../libs/bootstrap-slider'
+  baseUrl : 'js/scripts',
+  paths : {
+    'jquery' : '../libs/jquery',
+    'jqueryui' : '../libs/jquery-ui',
+    'underscore' : '../libs/underscore',
+    'bootstrap' : '../libs/bootstrap',
+    'io' : '../libs/socket.io',
+    'jscookie' : '../libs/js.cookie',
+    'handlebars' : '../libs/handlebars',
+    'bootstrapslider' : '../libs/bootstrap-slider'
   },
-  shim: {
-    'config': {
-      deps: ['underscore', 'jquery'],
-      exports: 'config'
+  shim : {
+    'config' : {
+      deps : ['underscore', 'jquery'],
+      exports : 'config'
     },
-    'bootstrap': {
-      deps: ['jquery']
+    'jquery' : {
+      exports : '$'
     },
-    'jqueryui': {
-      deps: ['jquery']
+    'bootstrap' : {
+      deps : ['jquery']
     },
-    'bootstrapslider': {
-      deps: ['bootstrap']
+    'jqueryui' : {
+      deps : ['jquery']
     },
-    'jscookie': {
+    'bootstrapslider' : {
+      deps : ['bootstrap']
+    },
+    'jscookie' : {
       deps: ['jquery']
     }
   }
