@@ -34,13 +34,5 @@ require.config({
   }
 });
 
-// global variable
-var
-  gTemplates = {},
-  gAlertCnt = 1,
-  gAlertTime = 4000,
-  gUsers = {},
-  gUser = {};
-
 // load app... duh
 require(['load']);

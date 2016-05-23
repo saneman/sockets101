@@ -6,7 +6,8 @@ module.exports = {
       email: aUser.username,
       username: aUser.username.split('@')[0],
       password: md5(aUser.password),
-      socketID: aSocket.id
+      socketID: aSocket.id,
+      loggedIn: false
     };
     return user;
   },

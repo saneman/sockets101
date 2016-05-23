@@ -5,8 +5,8 @@
     {{#each users}}
       {{#if this.loggedIn}}
       <li user-id="{{this._id}}" class="list-group-item user-item {{this.active}}">
-        <i class="glyphicon glyphicon-user {{#if this.loggedIn}}online{{/if}}"></i> &nbsp; <strong>{{this.username}}</strong>
-        {{#if this.active}}
+        <i class="glyphicon glyphicon-user {{#if this.loggedIn}}online{{/if}}"></i> &nbsp; <strong>{{this.username}} |{{this.isUser}}|</strong>
+        {{#if this.isUser}}
         <div class="btn-group pull-right" role="group">
           <button type="button" class="btn btn-default btn-xs logout-button">Log Out</button>
           <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i></button>
@@ -21,7 +21,7 @@
     {{#each users}}
       {{#unless this.loggedIn}}
       <li user-id="{{this._id}}" class="list-group-item user-item {{this.active}}">
-        <i class="glyphicon glyphicon-user"></i> &nbsp; <strong>{{this.username}}</strong>
+        <i class="glyphicon glyphicon-user"></i> &nbsp; <strong>{{this.username}}|{{this.isUser}}|</strong>
       </li>
       {{/unless}}
     {{/each}}

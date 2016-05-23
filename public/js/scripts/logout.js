@@ -9,14 +9,13 @@ function (namespace, Cookies, handlebars) {
   'use strict';
 
   var
-    utils = namespace.utils,
-    showAlert = utils.showAlert,
     globals = namespace.globals,
-    commands = globals.commands,
+    gUser = globals.gUser,
+    gUsers = globals.gUsers,
     socket = globals.socket;
 
   // add success and failure to the global command list for callbacks
-  commands.logout = {
+  globals.logout = {
     main: function (aElement) {
       socket.emit('command', {
         command: 'logout',
@@ -27,30 +26,37 @@ function (namespace, Cookies, handlebars) {
     },
     success: function (aData) {
       var
+        // get ID of user logging out
         userLoggingOutID = aData.userID,
-        user = aData.user,
-        userID = globals.gUser._id,
-        $user = $('.user-item[user-id="' + aData.userID + '"]');
+        // get ID of current user
+        userID = gUser._id,
+        // get userlist element of the user logging out
+        $user = $('.user-item[user-id="' + userLoggingOutID + '"]');
 
-      console.log('logout success');
 
+
+      // check of user loggin out is the current user
       if (userID === userLoggingOutID) {
-        gUser = user;
-        console.log('its me loggin out', gUser);
-        delete gUsers[aData.userID];
+        // console.log('its ->>ME<<- loggin out', this.gUser);
+
+        // set flag on this user as they are the ones logging out
+        gUser.loggedIn = false;
+
         Cookies.remove('appUser');
         // render the 'login module'
         // $('.user-list').html('ddddddd');
-        commands.login.render();
+        globals.login.render();
       }
       else {
-        console.log('its not me loggin');
+        // set flag on user who is logging out  in global users
+        gUsers[aData.userID].loggedIn = false;
+        // console.log('its ->>NOT<<- me logging out', this.gUser);
         $user.effect('pulsate', {times: 1}, 500);
-        commands.getUsers.main({});
+        globals.getUsers.main({});
       }
     },
     failure: function (aData) {
-      showAlert('warning', aData.message);
+      globals.showAlert('warning', aData.message);
     },
     render: function () {
 

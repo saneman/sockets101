@@ -12,12 +12,11 @@ function (namespace, Cookies, handlebars) {
   "use strict";
 
   var
-    utils = namespace.utils,
     globals = namespace.globals,
-    commands = globals.commands,
+    gTemplates = globals.gTemplates,
     template = handlebars.compile(gTemplates['buttons-app'])();
 
-  commands.buttonsApp = {
+  globals.buttonsApp = {
     main: function (aElement) {
       var padNum = $(aElement.target).attr('num');
 
@@ -54,7 +53,7 @@ function (namespace, Cookies, handlebars) {
         $button.addClass('under-my-control');
         $('body').on('keydown', function (key) {
           if ([37, 38, 39, 40].indexOf(key.which) > -1) {
-            commands.moveButton.main(key.which);
+            globals.moveButton.main(key.which);
           }
         });
         $button.css('color','lightgreen');
@@ -68,7 +67,7 @@ function (namespace, Cookies, handlebars) {
     render: function () {
       $('.main').html(template);
 
-      $('.pad-button').off().on('click', commands.buttonsApp.main);
+      $('.pad-button').off().on('click', globals.buttonsApp.main);
     }
   };
 });

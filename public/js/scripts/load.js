@@ -11,29 +11,43 @@ function (namespace, io, Cookies) {
   "use strict";
 
   // get globals from the namespace
-  var globals = namespace.globals;
+  var
+    globals = namespace.globals,
+    // set up socket things on window thing
+    socket = io();
 
-  // set up socket things on window thing
-  globals.socket = io();
+  globals.socket = socket;
+
+  // socket = globals.socket;
 
   // when socket recieves a 'connected' event start doing things
-  globals.socket.on('connected', function (aData) {
+  socket.on('connected', function (aData) {
     // load templates recieved from server into the global templates variable
-    namespace.utils.loadTemplates(aData.templates);
+    globals.loadTemplates(aData.templates);
 
     // listen for server emitting 'success' event
-    globals.socket.on('success', function (aData) {
-      globals.commands[aData.success].success(aData);
+    socket.on('success', function (aData) {
+      // console.log("socket.on('success')", aData);
+      // check if global method is availible
+      if (globals[aData.success]) {
+        globals[aData.success].success(aData);
+      }
     });
 
-    // listen for server emitting 'success' event
-    globals.socket.on('failure', function (aData) {
-      globals.commands[aData.failure].failure(aData);
+    // listen for server emitting 'failure' event
+    socket.on('failure', function (aData) {
+      // console.log('failure :' + aData.failure);
+      if (globals[aData.failure]) {
+        globals[aData.failure].failure(aData);
+      }
+      else {
+        globals.showAlert('warning', aData.message);
+      }
     });
 
     // load the 'login module'
     require(['login'], function () {
-      globals.commands.login.render();
+      globals.login.render();
     });
   });
 });

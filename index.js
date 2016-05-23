@@ -11,7 +11,7 @@ var
   io = require('socket.io')(http),
   port = process.env.PORT || 3000,
   connectionCnt = 0,
-  gActiveUsers = {},
+  gUsers = {},
   gTemplates = {},
   mongodb = require('mongodb'),
   MongoClient = mongodb.MongoClient,
@@ -19,6 +19,7 @@ var
   getSocketClients = function () {
     return Object.keys(io.clients().sockets);
   },
+  allClients = [],
   assert = require('assert'),
   dbName = 'test',
   dbUrl = 'mongodb://localhost:27017/' + dbName,
@@ -173,33 +174,39 @@ var
         var returnData;
           assert.equal(err, null);
           if (user !== null) {
+
+            gUsers[user._id] = user;
+
             returnData = {
               success: 'getUsers',
               message: 'loading user list',
-              user: user
+              user: user,
+              users: gUsers,
+              isUser: false
             };
             socket.broadcast.emit('success', returnData);
+
+            returnData = {
+              success: 'getUsers',
+              message: 'loading user list',
+              user: user,
+              users: gUsers,
+              isUser: true
+            };
             socket.emit('success', returnData);
           }
       });
     },
 
-    signUp: function (aData, socket) {
-      var
-        user = prepUser(aData, socket),
-        returnData = {};
+    signup: function (aData, socket) {
+      var user = prepUser(aData, socket), returnData = {};
       db.collection('users').insertOne(user, function(err, result) {
         if (err === null && result.insertedCount === 1) {
           user = result.ops[0];
-          socket.emit('success', {
-            success: 'signUp',
-            message: 'Congratulations you have been signed up',
-            user: user
-          });
-          // sendWelcomeMail(user);
+          gUsers[user._id] = user;
+          clientCommands.login(user, socket);
         }
         else {
-          console.log('Username is already taken.');
           socket.emit('failure', {
             failure: 'signUp',
             message: 'Username is already taken.'
@@ -209,41 +216,40 @@ var
     },
 
     logout: function (aData, socket) {
-      var returnData = {}, userID = aData.userID, loggedInUser, searchBy;
+      var
+        returnData = {},
+        userID = aData.userID,
+        searchBy;
 
       if (userID && userID.toString() === socket.userID.toString()) {
-
-
         searchBy = {
           _id: ObjectId(userID)
         };
-
-        // db.collection('users').findOne(searchBy).then(function (loggedInUser) {
-        db.collection('users').findAndModify(
-          searchBy, // query
-          [],  // sort order
-          {$set: {loggedIn: false}}, // replacement, replaces only the field "hi"
-          {}
-        ).then(function (loggedInUser) {
-          var user = loggedInUser.value;
-          if (loggedInUser.ok) {
-
-            console.log(__l + 'logout time', aData);
-
-            delete gActiveUsers[socket.id];
-            socket.userLoggedIn = false;
-            returnData = {
-              success: 'logout',
-              message: 'user: ' + userID + ' has logged out',
-              userID: userID
-            };
-            socket.broadcast.emit('success', returnData);
-            socket.emit('success', returnData);
+        // update "loggedIn" flag on user in DB
+        db.collection('users').update(
+          searchBy, {
+            $set:{
+              loggedIn: false
+            }
           }
-        });
+        );
+        // set flag on user in global list
+        gUsers[userID].loggedIn = false;
+        // flag on socket to be logged out
+        socket.loggedIn = false;
+        returnData = {
+          success: 'logout',
+          message: 'user: ' + userID + ' has logged out',
+          userID: userID,
+        };
+        console.log('logging out success');
+        // tell everyone ELSE a user has logged out
+        socket.broadcast.emit('success', returnData);
+        // tell user he has successfully logged out
+        socket.emit('success', returnData);
       }
       else {
-        // console.log('failed to log out');
+        console.log('logging out failure');
         returnData = {
           failure: 'logout',
           message: 'failed to log out',
@@ -260,14 +266,13 @@ var
         loggedInUser,
         searchBy;
 
-      searchBy = aData._id === undefined ? {
+      searchBy = aData._id !== undefined ? {
+        "_id": ObjectId(aData._id)
+      } : {
         password: md5(user.password),
         email: user.username
-      } : {
-        "_id": ObjectId(aData._id)
       };
-
-      // db.collection('users').findOne(searchBy).then(function (loggedInUser) {
+      // db.collection(__l + ': users').findOne(searchBy, function (err, loggedInUser) {
       db.collection('users').findAndModify(
         searchBy, // query
         [],  // sort order
@@ -276,28 +281,61 @@ var
       ).then(function (loggedInUser) {
         var user = loggedInUser.value;
         // we have the user
-        if (loggedInUser.ok) {
-          // user
+        if (user) {
+
+
+          // update user in db to be "loggedIn"
+          db.collection('users').update(
+            {_id: user._id}, {
+              $set:{
+                loggedIn: true
+              }
+            }
+          );
+
+
           console.log(__l + ': Welcome back ' + user.username);
-          user.socketID = socket.id;
 
+          // set the user id on the socket
           socket.userID = user._id;
-          socket.userLoggedIn = true;
+          // set the loggedIn flag on the users socket
+          socket.loggedIn = true;
 
-          gActiveUsers[socket.id] = user;
+          // set socket id on user
+          user.socketID = socket.id;
+          //set the loggedIn flag on the user
+          user.loggedIn = true;
+
+          gUsers[user._id] = user;
 
           // console.log(__l + ': login active sockets: ', getSocketClients());
-          // console.log(__l + ': login activeUsers keys: ', Object.keys(gActiveUsers));
+          // console.log(__l + ': login activeUsers keys: ', Object.keys(gUsers));
 
           // console.log(__l + ': login success');
+
+          // console.log(__l + ': login success', gUsers);
 
           socket.emit('success', {
             success: 'login',
             user: user,
-            users: gActiveUsers
+            isUser: true,
+            users: gUsers,
+            message: 'Welcome back: ' + user.username
           });
+
+          socket.broadcast.emit('success', {
+            success: 'login',
+            isUser: false,
+            user: user,
+            users: gUsers,
+            message: 'Welcome back: ' + user.username
+          });
+
         }
         else {
+
+          console.log(__l + ': login failure');
+
           socket.emit('failure', {
             failure: 'login',
             user: user,
@@ -344,8 +382,12 @@ MongoClient.connect(dbUrl, function (err, aDb) {
 
   // check when a user connects
   io.on('connection', function (socket) {
-    socket.userLoggedIn = false;
-    socket.broadcast.emit('a client connected on socket: ', socket.id);
+    var connectionMessage = 'a client connected on socket: ' + socket.id;
+
+    allClients.push(socket);
+
+    socket.loggedIn = false;
+    // socket.broadcast.emit();
 
     sendConnectionData(socket);
 
@@ -353,7 +395,8 @@ MongoClient.connect(dbUrl, function (err, aDb) {
     socket.on('command', function (aData) {
       var command = aData.command;
       // run the client command
-      // console.log(__l + ': command', aData)
+      // console.log(__l + ': command', command);
+
       if (clientCommands[command]) {
         clientCommands[command](aData.data, socket);
       }
@@ -364,11 +407,25 @@ MongoClient.connect(dbUrl, function (err, aDb) {
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
-      if (gActiveUsers[socket.id]) {
-        delete gActiveUsers[socket.id];
+
+      var i = allClients.indexOf(socket);
+      allClients.splice(i, 1);
+
+
+
+      if (gUsers[socket.userID]) {
+        console.log('disconnect', socket.userID);
+        delete gUsers[socket.userID];
+        db.collection('users').update(
+          {_id: socket.userID}, {
+            $set:{
+              loggedIn: false
+            }
+          }
+        );
         clientCommands.getUsers({disconnect: true}, socket);
         // console.log(__l + ': disconnect active sockets: ', Object.keys(io.clients().sockets));
-        // console.log(__l + ': disconnect activeUsers keys: ', Object.keys(gActiveUsers));
+        // console.log(__l + ': disconnect activeUsers keys: ', Object.keys(gUsers));
       }
     });
   });
