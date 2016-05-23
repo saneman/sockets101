@@ -25,37 +25,18 @@ function (namespace, Cookies, handlebars) {
     },
     success: function (aData) {
       var
-        user = aData.user,
         users = aData.users,
         gUser = globals.gUser,
-        isUser = user._id === gUser._id,
         template = handlebars.compile(gTemplates['user-list']);
 
-      user.active = isUser ? 'active' : undefined;
-      // gUsers[socket.id] = user;
-
       gUsers = users;
-      if (isUser) {
-        gUsers[gUser._id].isUser = isUser;
-      }
-      gUsers[user._id].active = isUser ? 'active' : undefined;
+      gUsers[gUser._id].isUser = true;
 
-
-      // console.log('gUsers: ', gUsers);
-
-      // console.log('isUser: ' + user.username, isUser);
-
-      console.log('GU gUser: ', gUser._id, ' vs ', user._id);
-      console.log('GU gUsers: ', gUsers);
-
-      // console.log('getUsers: ', user.socketID, globals.socket.id);
-      // console.log('getUsers: gUser: ', gUser);
-
-      // check if user is logged in and is user is active
-      // if (gUser.loggedIn) {
-        $('.user-list').html(template({users: gUsers})).show();
-
-        // console.log('user-list success: ' + isUser, gUser);
+      if (gUsers[gUser._id].loggedIn) {
+        $('.user-list').html(template({
+          users: gUsers,
+          user: gUser
+        })).show();
 
         $('.logout-button').off().on('click', function () {
           // load the 'login module'
@@ -63,9 +44,7 @@ function (namespace, Cookies, handlebars) {
             globals.logout.main();
           });
         });
-
-      // }
-
+      }
     },
     failure: function (aData) {
       globals.showAlert('warning', aData.message);
@@ -75,14 +54,4 @@ function (namespace, Cookies, handlebars) {
       globals.getUsers.main();
     }
   };
-
-
-
-
-
-
-
-
-
-
 });

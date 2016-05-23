@@ -33,26 +33,22 @@ function (namespace, Cookies, handlebars) {
         // get userlist element of the user logging out
         $user = $('.user-item[user-id="' + userLoggingOutID + '"]');
 
-
-
       // check of user loggin out is the current user
       if (userID === userLoggingOutID) {
-        // console.log('its ->>ME<<- loggin out', this.gUser);
-
         // set flag on this user as they are the ones logging out
         gUser.loggedIn = false;
 
         Cookies.remove('appUser');
         // render the 'login module'
-        // $('.user-list').html('ddddddd');
         globals.login.render();
+        globals.getUsers.main();
       }
       else {
         // set flag on user who is logging out  in global users
         gUsers[aData.userID].loggedIn = false;
         // console.log('its ->>NOT<<- me logging out', this.gUser);
         $user.effect('pulsate', {times: 1}, 500);
-        globals.getUsers.main({});
+        globals.getUsers.main();
       }
     },
     failure: function (aData) {

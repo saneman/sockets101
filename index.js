@@ -181,18 +181,9 @@ var
               success: 'getUsers',
               message: 'loading user list',
               user: user,
-              users: gUsers,
-              isUser: false
+              users: gUsers
             };
             socket.broadcast.emit('success', returnData);
-
-            returnData = {
-              success: 'getUsers',
-              message: 'loading user list',
-              user: user,
-              users: gUsers,
-              isUser: true
-            };
             socket.emit('success', returnData);
           }
       });
@@ -241,6 +232,7 @@ var
           success: 'logout',
           message: 'user: ' + userID + ' has logged out',
           userID: userID,
+          users: gUsers
         };
         console.log('logging out success');
         // tell everyone ELSE a user has logged out
@@ -282,8 +274,6 @@ var
         var user = loggedInUser.value;
         // we have the user
         if (user) {
-
-
           // update user in db to be "loggedIn"
           db.collection('users').update(
             {_id: user._id}, {
@@ -293,9 +283,7 @@ var
             }
           );
 
-
           console.log(__l + ': Welcome back ' + user.username);
-
           // set the user id on the socket
           socket.userID = user._id;
           // set the loggedIn flag on the users socket
@@ -307,13 +295,6 @@ var
           user.loggedIn = true;
 
           gUsers[user._id] = user;
-
-          // console.log(__l + ': login active sockets: ', getSocketClients());
-          // console.log(__l + ': login activeUsers keys: ', Object.keys(gUsers));
-
-          // console.log(__l + ': login success');
-
-          // console.log(__l + ': login success', gUsers);
 
           socket.emit('success', {
             success: 'login',
