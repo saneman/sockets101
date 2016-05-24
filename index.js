@@ -8,7 +8,6 @@ var
   allClients = [],
   dbUrl = 'mongodb://localhost:27017/test',
   clearUserDB = true;
-
 // connect to mongo database and create db object
 utils.MongoClient.connect(dbUrl, function (err, db) {
   // shout about errors

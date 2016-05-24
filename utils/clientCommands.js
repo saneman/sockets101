@@ -30,16 +30,10 @@ module.exports = {
     var
       returnData = {},
       userID = aData.userID,
-      searchBy = {
-        _id: utils.ObjectId(userID)
-      };
+      findWhere = {_id: utils.ObjectId(userID)},
+      setData = {'buttonNum': aData.padNum};
     // update user set which button he is looking at
-    db.collection('users').update(
-      searchBy, {
-        $set:{
-          'buttonNum': aData.padNum
-        }
-      }, function () {
+    db.collection('users').update(findWhere, {$set: setData}, function () {
         // vomitUser(userID);
         returnData = {
           success: 'takeControl',
@@ -70,8 +64,8 @@ module.exports = {
 
   getUsers: function (aData, socket, db, gUsers) {
     console.log(__l + ': get users');
-    var search = {};
-    db.collection('users').find(search).each(function(err, user) {
+    var findWhere = {};
+    db.collection('users').find(findWhere).each(function(err, user) {
       var returnData;
         utils.assert.equal(err, null);
         if (user !== null) {
@@ -110,16 +104,16 @@ module.exports = {
     var
       returnData = {},
       userID = aData.userID,
-      searchBy;
+      findWhere,
+      setData;
 
     if (userID && userID.toString() === socket.userID.toString()) {
-      searchBy = {
+      findWhere = {
         _id: utils.ObjectId(userID)
-      };
+      },
+      setData = {loggedIn: false};
       // update "loggedIn" flag on user in DB
-      db.collection('users').update(searchBy, {
-        $set: {loggedIn: false}
-      }, function () {
+      db.collection('users').update(findWhere, {$set: setData}, function () {
         // set flag on user in global list
         gUsers[userID].loggedIn = false;
         // flag on socket to be logged out
@@ -153,31 +147,26 @@ module.exports = {
       user = aData,
       returnData = {},
       loggedInUser,
-      searchBy;
-
-    searchBy = aData._id !== undefined ? {
-      "_id": utils.ObjectId(aData._id)
-    } : {
-      password: utils.md5(user.password),
-      email: user.username
-    };
-    // db.collection(__l + ': users').findOne(searchBy, function (err, loggedInUser) {
+      findWhere = aData._id !== undefined ? {
+        "_id": utils.ObjectId(aData._id)
+      } : {
+        password: utils.md5(user.password),
+        email: user.username
+      };
+    // db.collection(__l + ': users').findOne(findWhere, function (err, loggedInUser) {
     db.collection('users').findAndModify(
-      searchBy, // query
+      findWhere, // query
       [],  // sort order
-      {$set: {loggedIn: true}}, // replacement, replaces only the field "hi"
+      {}, // replacement, replaces only the field "hi"
       {}
     ).then(function (loggedInUser) {
-      var user = loggedInUser.value, searchBy;
+      var user = loggedInUser.value, findWhere, setData;
       // we have the user
       if (user) {
-        searchBy = {_id: user._id};
+        findWhere = {_id: user._id};
+        setData = {loggedIn: true};
         // update user in db to be "loggedIn"
-        db.collection('users').update(searchBy, {
-          $set:{
-            loggedIn: true
-          }
-        }, function () {
+        db.collection('users').update(findWhere, {$set: setData}, function () {
           console.log(__l + ': Welcome back ' + user.username);
           // set the user id on the socket
           socket.userID = user._id;
