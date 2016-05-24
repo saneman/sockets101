@@ -147,20 +147,23 @@ module.exports = {
       user = aData,
       returnData = {},
       loggedInUser,
-      findWhere = aData._id !== undefined ? {
-        "_id": utils.ObjectId(aData._id)
-      } : {
-        password: utils.md5(user.password),
-        email: user.username
-      };
+      findWhere,
+      setData = {loggedIn: true};
+
+    findWhere = aData._id !== undefined ? {
+      "_id": utils.ObjectId(aData._id)
+    } : {
+      password: utils.md5(user.password),
+      email: user.username
+    };
     // db.collection(__l + ': users').findOne(findWhere, function (err, loggedInUser) {
     db.collection('users').findAndModify(
       findWhere, // query
       [],  // sort order
-      {}, // replacement, replaces only the field "hi"
+      {$set: setData}, // replacement, replaces only the field "hi"
       {}
     ).then(function (loggedInUser) {
-      var user = loggedInUser.value, findWhere, setData;
+      var user = loggedInUser.value, findWhere;
       // we have the user
       if (user) {
         findWhere = {_id: user._id};
