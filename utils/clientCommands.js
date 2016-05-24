@@ -168,9 +168,10 @@ module.exports = {
       {$set: {loggedIn: true}}, // replacement, replaces only the field "hi"
       {}
     ).then(function (loggedInUser) {
-      var user = loggedInUser.value, searchBy = {_id: user._id};
+      var user = loggedInUser.value, searchBy;
       // we have the user
       if (user) {
+        searchBy = {_id: user._id};
         // update user in db to be "loggedIn"
         db.collection('users').update(searchBy, {
           $set:{
