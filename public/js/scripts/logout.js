@@ -55,7 +55,6 @@ function (namespace, Cookies, handlebars) {
       globals.showAlert('warning', aData.message);
     },
     render: function () {
-
     }
   };
 });
