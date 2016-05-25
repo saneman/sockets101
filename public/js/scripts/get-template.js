@@ -10,7 +10,7 @@ function (namespace, Cookies, handlebars) {
   "use strict";
 
   var
-    globals = namespace.globals,
+    globals = namespace,
     gTemplates = globals.gTemplates,
     socket = globals.socket;
 
@@ -30,17 +30,29 @@ function (namespace, Cookies, handlebars) {
         template = aData.template,
         // count of templates that the server will be sending
         templateCount = aData.templateCount,
-        gTemplateCount;
+        gTemplateCount,
+        percent,
+      message;
       // add the template to the "gTemplates"
       gTemplates[templateName] = template;
       // get the latest count of the templates loaded
       gTemplateCount = Object.keys(gTemplates).length;
+      // calculate the loading percentage
+      percent = (gTemplateCount / templateCount) * 100;
+      // progress message
+      message = percent + '% loading: ' + templateName;
+
+      globals.showAlert('success', message);
+      globals.updateProgressBar(gTemplateCount, templateCount, templateName);
       // if the counts match we have everything to run the app
       if (gTemplateCount === templateCount) {
         // start app by loading the "login" script
         require(['login'], function () {
-          // when the "login" script is loaded run the render method of "login"
-          globals.login.render();
+          // nasty lame delay
+          setTimeout(function () {
+            // when the "login" script is loaded run the render method of "login"
+            globals.login.render();
+          }, 500);
         });
       }
     },

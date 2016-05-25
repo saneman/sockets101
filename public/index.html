@@ -13,26 +13,21 @@
     <div class="alert-box"></div>
     <div class="app">
       <div class="main">
-        <div class="alert alert-success main-alert" role="alert">
-          <i class="glyphicon glyphicon-info-sign"></i> LOADING...
+        <div class="progress">
+          <div
+            class="progress-bar progress-bar-striped active progress-bar-success"
+            role="progressbar"
+            aria-valuenow="1"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style="width: 1%"
+          >
+            <span class="pgr-bar sr-only">1% Complete</span>
+          </div>
         </div>
       </div>
       <div class="user-list"></div>
     </div>
-    <!-- New School -->
     <script data-main="config" src="js/libs/require.js"></script>
-
-    <!-- Old School -->
-    <!--
-    <script src="/js/libs/jquery.js"></script>
-    <script src="/js/libs/jquery-ui.js"></script>
-    <script src="/js/libs/bootstrap.js"></script>
-    <script src="/js/libs/slider/js/bootstrap-slider.js"></script>
-    <script src="/js/libs/handlebars.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/libs/js.cookie.js"></script>
-    <script src="/js/libs/handlebars.js"></script>
-    <script src="/js/scripts/main.js"></script>
-    -->
   </body>
 </html>

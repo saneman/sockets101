@@ -9,7 +9,7 @@ function (namespace, Cookies, handlebars) {
   'use strict';
 
   var
-    globals = namespace.globals,
+    globals = namespace,
     gUser = globals.gUser,
     gUsers = globals.gUsers,
     socket = globals.socket;

@@ -12,7 +12,7 @@ function (namespace, io, Cookies) {
 
   // get globals from the namespace
   var
-    globals = namespace.globals,
+    globals = namespace,
     // set up socket things on window thing
     socket = io();
 
@@ -22,9 +22,13 @@ function (namespace, io, Cookies) {
   socket.on('connected', function (aData) {
     // listen for server emitting 'success' event
     socket.on('success', function (aData) {
+      var command = aData.success;
       // check if global method is availible
-      if (globals[aData.success]) {
-        globals[aData.success].success(aData);
+      if (globals[command]) {
+        globals[command].success(aData);
+      }
+      else {
+        console.log('wtf: ', command);
       }
     });
     // listen for server emitting 'failure' event

@@ -10,7 +10,7 @@ function (namespace, Cookies, handlebars) {
   "use strict";
 
   var
-    globals = namespace.globals,
+    globals = namespace,
     gTemplates = globals.gTemplates,
     template = handlebars.compile(gTemplates.login)(),
     socket = globals.socket;

@@ -10,11 +10,10 @@ function (namespace, Cookies, handlebars) {
   "use strict";
 
   var
-    globals = namespace.globals,
+    globals = namespace,
     gTemplates = globals.gTemplates,
     template = handlebars.compile(gTemplates.login)(),
     socket = globals.socket;
-
   // add success and failure to the global command loist for callbacks
   globals.login = {
     // main action of the module
@@ -37,15 +36,17 @@ function (namespace, Cookies, handlebars) {
         message = aData.message,
         inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000),
         appUser = Cookies.getJSON('appUser');
-
+      // if we find the user wit those details
       if (isUser) {
+        // set global user
         globals.gUser = user;
-
         globals.showAlert('success', message);
+        // remove the login form
         $('.login').remove();
-
+        // reduce main app width to accomodate user list
+        $('.main').addClass('main-app');
+        // set cookie so user can refreh browser
         Cookies.set('appUser', {_id: user._id}, {expires: inFifteenMinutes});
-
         // load an app
         require(['buttons-app'], function () {
           globals.buttonsApp.render();
@@ -68,8 +69,7 @@ function (namespace, Cookies, handlebars) {
     },
     render: function () {
       var appUser = Cookies.getJSON('appUser');
-      // globals.showAlert('warning', 'render login');
-      // console.log('warning', 'render login', appUser);
+      // check if user has cookie set
       if (appUser !== undefined) {
         // run login command
         this.main({
@@ -77,6 +77,7 @@ function (namespace, Cookies, handlebars) {
         });
       }
       else {
+        // if login fails clear user list and hide it just becos
         $('.user-list').html('').hide();
         // insert handlebars template in to app container
         $('.main').html(template);
