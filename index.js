@@ -1,36 +1,42 @@
 var
   // load utility things
-  utils = require('./utils/basic'),
+  utils = require('./utils/basic')(),
   // get the client commands
-  clientCommands = require('./utils/clientCommands'),
+  clientCommands = require('./clientCommands/main'),
+  // clientCommands.utils = utils,
   port = process.env.PORT || 3000,
   gUsers = {},
   allClients = [],
   dbUrl = 'mongodb://localhost:27017/test',
   clearUserDB = true;
+
+// clientCommands.utils = utils;
+
+// console.log('clientCommands.signUp', clientCommands.signup);
+
 // connect to mongo database and create db object
-utils.MongoClient.connect(dbUrl, function (err, db) {
+MongoClient.connect(dbUrl, function (err, db) {
   // shout about errors
-  utils.assert.equal(null, err);
+  assert.equal(null, err);
   // clear user db
   if (clearUserDB) {
     // clear the db and remove indexs
-    utils.clearCollection('users', db);
+    clearCollection('users', db);
     // create the unique index for users collection on username
     db.collection('users').createIndex({ username: 1 }, { unique: true });
   }
   // start listening on port
-  utils.http.listen(port, utils.shoutPortNumber);
+  http.listen(port, shoutPortNumber);
   // Routing for files and stuff
-  utils.app.use(utils.express.static(__dirname + '/public'));
+  app.use(express.static(__dirname + '/public'));
   // check when a user connects
-  utils.io.on('connection', function (socket) {
+  io.on('connection', function (socket) {
     //socket to client list
     allClients.push(socket);
     // set loggedIn flag on socket when a client connects
     socket.loggedIn = false;
     // send the connecting client templates and stuff
-    utils.sendConnectionData(socket);
+    sendConnectionData(socket);
     // listen for 'command' event from user on socket
     socket.on('command', function (aData) {
       var command = clientCommands[aData.command];
