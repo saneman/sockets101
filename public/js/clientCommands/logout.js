@@ -32,12 +32,11 @@ function (namespace, Cookies, handlebars) {
         userID = gUser._id,
         // get userlist element of the user logging out
         $user = $('.user-item[user-id="' + userLoggingOutID + '"]');
-
       // check of user loggin out is the current user
       if (userID === userLoggingOutID) {
         // set flag on this user as they are the ones logging out
         gUser.loggedIn = false;
-
+        // delete the user cookie
         Cookies.remove('appUser');
         // render the 'login module'
         globals.login.render();

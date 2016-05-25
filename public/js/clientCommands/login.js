@@ -2,7 +2,8 @@ define([
   'namespace',
   'jscookie',
   'handlebars',
-  'bootstrap'
+  'bootstrap',
+  'io'
 ],
 
 function (namespace, Cookies, handlebars) {

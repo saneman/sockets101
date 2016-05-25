@@ -2,8 +2,8 @@ var
   // load utility things
   utils = require('./utils/basic')(),
   // get the client commands
-  clientCommands = require('./clientCommands/main'),
-  // clientCommands.utils = utils,
+  serverCommands = require('./serverCommands/main'),
+  // serverCommands.utils = utils,
   port = process.env.PORT || 3000,
   gUsers = {},
   allClients = [],
@@ -34,7 +34,7 @@ MongoClient.connect(dbUrl, function (err, db) {
     socket.loggedIn = false;
     // listen for 'command' event from user on socket
     socket.on('command', function (aData) {
-      var command = clientCommands[aData.command];
+      var command = serverCommands[aData.command];
       // check if we have the command
       if (command) {
         // run the client command
@@ -57,7 +57,7 @@ MongoClient.connect(dbUrl, function (err, db) {
           _id: socket.userID}, {$set: {loggedIn: false}
         }, function () {
           // send updated user list to clients
-          clientCommands.getUsers({disconnect: true}, socket, db, gUsers);
+          serverCommands.getUsers({disconnect: true}, socket, db, gUsers);
         });
       }
     });

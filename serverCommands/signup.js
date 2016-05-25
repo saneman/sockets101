@@ -5,7 +5,6 @@ module.exports = function (aData, socket, db, gUsers) {
       user = result.ops[0];
       gUsers[user._id] = user;
       console.log(__l + ': trying to login: ', user);
-      // clientCommands.login(user, socket, db, gUsers);
       socket.emit('success', {
         success: 'signup',
         user: user,

@@ -1,6 +1,6 @@
 // config for require
 require.config({
-  baseUrl : 'js/scripts',
+  baseUrl : 'js/clientCommands',
   paths : {
     'jquery' : '../libs/jquery',
     'jqueryui' : '../libs/jquery-ui',

@@ -15,7 +15,6 @@ function (namespace, io, Cookies) {
     globals = namespace,
     // set up socket things on window thing
     socket = io();
-
   // set socket onto globals
   globals.socket = socket;
   // when socket recieves a 'connected' event start doing things
