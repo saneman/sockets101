@@ -9,11 +9,6 @@ var
   allClients = [],
   dbUrl = 'mongodb://localhost:27017/test',
   clearUserDB = true;
-
-// clientCommands.utils = utils;
-
-// console.log('clientCommands.signUp', clientCommands.signup);
-
 // connect to mongo database and create db object
 MongoClient.connect(dbUrl, function (err, db) {
   // shout about errors
