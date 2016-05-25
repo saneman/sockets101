@@ -4,7 +4,6 @@ module.exports = function (aData, socket, db, gUsers) {
     if (err === null && result.insertedCount === 1) {
       user = result.ops[0];
       gUsers[user._id] = user;
-      console.log(__l + ': trying to login: ', user);
       socket.emit('success', {
         success: 'signup',
         user: user,

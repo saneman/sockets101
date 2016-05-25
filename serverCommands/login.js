@@ -31,7 +31,6 @@ module.exports = function (aData, socket, db, gUsers) {
         socket.userID = user._id;
         // set the loggedIn flag on the users socket
         socket.loggedIn = true;
-
         // set socket id on user
         user.socketID = socket.id;
         //set the loggedIn flag on the user
@@ -57,9 +56,6 @@ module.exports = function (aData, socket, db, gUsers) {
       });
     }
     else {
-
-      console.log(__l + ': login failure');
-
       socket.emit('failure', {
         failure: 'login',
         user: user,
