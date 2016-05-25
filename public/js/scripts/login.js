@@ -68,7 +68,7 @@ function (namespace, Cookies, handlebars) {
     },
     render: function () {
       var appUser = Cookies.getJSON('appUser');
-      globals.showAlert('warning', 'render login');
+      // globals.showAlert('warning', 'render login');
       // console.log('warning', 'render login', appUser);
       if (appUser !== undefined) {
         // run login command

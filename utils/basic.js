@@ -34,21 +34,34 @@ module.exports = function () {
       }
     },
     this.sendConnectionData = function (socket) {
-      var dir = __dirname + '/../templates/', templates = {};
-      fs.readdir(dir, function (aErr, aFiles) {
-        aFiles.forEach(function (fileToRead) {
-          fs.readFile(dir + fileToRead, 'utf8', function (aErr, aContent) {
-            templates[fileToRead.split('.tmpl')[0]] = aContent;
-            if (aFiles.length === (aFiles.indexOf(fileToRead) + 1)) {
-              socket.emit('connected', {
-                socketID: socket.id,
-                templates: templates
-              });
-            }
-          });
-        });
+    },
+    this.sendClientTemplates = function (socket) {
+      var dir = __dirname + '/../templates/'
+      getTemplateList(function (aList) {
+        for (var fKey in aList) {
+          fs.readFile(dir + aList[fKey], 'utf8',
+            (function(filename, err, data) {
+              console.log('filename', filename);
+              var
+                returnData = {
+                  success: 'getTemplate',
+                  templateName: filename.split('.tmpl')[0],
+                  template: data
+                };
+              socket.emit('success', returnData);
+            }).bind(null, aList[fKey])
+          );
+        }
       });
     },
+
+    this.getTemplateList = function (aCallBack) {
+      var dir = __dirname + '/../templates/', templates = {};
+      fs.readdir(dir, function (aErr, aFiles) {
+        aCallBack(aFiles);
+      });
+    },
+
     this.vomitUser = function (aUserID, db) {
       console.log('vomitUserID: ',  aUserID);
       var search = {_id: ObjectId(aUserID)};

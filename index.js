@@ -26,12 +26,12 @@ MongoClient.connect(dbUrl, function (err, db) {
   app.use(express.static(__dirname + '/public'));
   // check when a user connects
   io.on('connection', function (socket) {
+    // send "connected" event to the client
+    socket.emit('connected');
     //socket to client list
     allClients.push(socket);
     // set loggedIn flag on socket when a client connects
     socket.loggedIn = false;
-    // send the connecting client templates and stuff
-    sendConnectionData(socket);
     // listen for 'command' event from user on socket
     socket.on('command', function (aData) {
       var command = clientCommands[aData.command];
