@@ -39,10 +39,7 @@ function (namespace, Cookies, handlebars) {
       gTemplateCount = Object.keys(gTemplates).length;
       // calculate the loading percentage
       percent = (gTemplateCount / templateCount) * 100;
-      // progress message
-      message = percent + '% loading: ' + templateName;
-
-      globals.showAlert('success', message);
+      // change the progrees on progress bar
       globals.updateProgressBar(gTemplateCount, templateCount, templateName);
       // if the counts match we have everything to run the app
       if (gTemplateCount === templateCount) {
