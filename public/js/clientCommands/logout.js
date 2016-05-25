@@ -43,8 +43,6 @@ function (namespace, Cookies, handlebars) {
         globals.getUsers.main();
       }
       else {
-        // set flag on user who is logging out  in global users
-        gUsers[aData.userID].loggedIn = false;
         // console.log('its ->>NOT<<- me logging out', this.gUser);
         $user.effect('pulsate', {times: 1}, 500);
         globals.getUsers.main();
