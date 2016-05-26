@@ -8,8 +8,21 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="/css/main.css" />
+    <script language="jscript">
+        function goFullscreen() {
+          // if on mobile go full screen
+          if (/mobile/i.test(navigator.userAgent)) {
+            mf = document.getElementById('main');
+            mf.webkitRequestFullscreen();
+            mf.style.display="";
+            screen.orientation.lock("landscape-primary");
+          }
+        }
+        document.documentElement.onclick = goFullscreen;
+        document.onkeydown = goFullscreen;
+    </script>
   </head>
-  <body>
+  <body  id="main" >
     <div class="alert-box"></div>
     <div class="app">
       <div class="main">

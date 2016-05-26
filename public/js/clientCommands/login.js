@@ -78,6 +78,8 @@ function (namespace, Cookies, handlebars) {
         });
       }
       else {
+
+
         $('.main').removeClass('main-app');
         // if login fails clear user list and hide it just becos
         $('.user-list').html('').hide();

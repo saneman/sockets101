@@ -1,5 +1,4 @@
 module.exports = function (aData, socket, db, gUsers) {
-  console.log(__l + ': get users');
   var findWhere = {};
   db.collection('users').find(findWhere).each(function(err, user) {
     var returnData;
